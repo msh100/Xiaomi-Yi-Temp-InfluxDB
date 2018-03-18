@@ -13,27 +13,26 @@ XiScanner = new Scanner(log);
 XiScanner.start();
 
 var deviceName = function (id) {
-    if (typeof config.Devices[id] === 'undefined') {
-        return id;
-    }
-    else {
-        return config.Devices[id];
-    }
+    if (typeof config.Devices[id] === 'undefined') return id;
+    else return config.Devices[id];
 }
 
 var writeDataPoint = function (type, value, unit, id) {
     log.debug('Writing', type.toLowerCase(), 'to Influx:', value, deviceName(id));
 
-    data = {};
+    data = tag = {};
     data[unit] = value;
+    tag['device'] = deviceName(id);
 
-    InfluxClient.write(type)
-        .tag({
-            device: deviceName(id)
-        })
-        .field(data)
-        .then(() => log.debug('Write point success'))
-        .catch(log.error);
+    if (config.PostUnknown || tag['device'] !== id) {
+        InfluxClient.write(type)
+            .tag(tag)
+            .field(data)
+            .then(() => log.debug('Write point success'))
+            .catch(log.error);
+    } else {
+        log.debug('Not posting %s information as device is unknown.', id);
+    }
 }
 
 XiScanner.on('temperatureChange', function (value, id) {

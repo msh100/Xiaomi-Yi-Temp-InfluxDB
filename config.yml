@@ -2,3 +2,4 @@ InfluxDB: 'http://192.168.1.170:8086/environment'
 Devices:
  4c65a8d08e39: 'Living Room'
  4c65a8d0923f: 'Guest Room'
+PostUnknown: false

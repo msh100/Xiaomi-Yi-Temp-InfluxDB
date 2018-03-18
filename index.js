@@ -20,47 +20,31 @@ var deviceName = function (id) {
     }
 }
 
-var temperatureChange = function (value, id) {
-    log.debug('Writing temperature to Influx:', value, deviceName(id));
+var writeDataPoint = function (type, value, unit, id) {
+    log.debug('Writing', type.toLowerCase(), 'to Influx:', value, deviceName(id));
 
-    InfluxClient.write('Temperature')
+    data = {};
+    data[unit] = value;
+
+    InfluxClient.write(type)
         .tag({
             device: deviceName(id)
         })
-        .field({
-            celcius: value
-        })
+        .field(data)
         .then(() => log.debug('Write point success'))
         .catch(log.error);
+}
+
+var temperatureChange = function (value, id) {
+    writeDataPoint('Temperature', value, 'celcius', id);
 }
 
 var humidityChange = function (value, id) {
-    log.debug('Writing humidity to Influx:', value, deviceName(id));
-
-    InfluxClient.write('Humidity')
-        .tag({
-            device: deviceName(id)
-        })
-        .field({
-            percent: value
-        })
-        .then(() => log.debug('Write point success'))
-        .catch(log.error);
-
+    writeDataPoint('Humidity', value, 'percent', id);
 }
 
 var batteryChange = function (value, id) {
-    log.debug('Write battery state to Influx:', value, deviceName(id));
-
-    InfluxClient.write('Battery')
-        .tag({
-            device: deviceName(id)
-        })
-        .field({
-            percent: value
-        })
-        .then(() => log.debug('Write point success'))
-        .catch(log.error);
+    writeDataPoint('Battery', value, 'percent', id);
 }
 
 Scanner.on('temperatureChange', temperatureChange);

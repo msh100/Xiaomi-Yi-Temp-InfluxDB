@@ -4,7 +4,7 @@
   "description": "Push Xiaomi BLE Temperature, Humidity, and battery information to InfluxDB",
   "main": "index.js",
   "dependencies": {
-    "homebridge-mi-hygrothermograph": "git+https://github.com/msh100/homebridge-mi-hygrothermograph.git",
+    "homebridge-mi-hygrothermograph": "1.0.2",
     "influxdb-nodejs": "^2.7.6",
     "js-yaml": "^3.11.0",
     "log": "^1.4.0"

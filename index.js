@@ -1,15 +1,16 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 
-var config = yaml.safeLoad(fs.readFileSync(__dirname + '/config.yml', 'utf8'));
+const config = yaml.safeLoad(fs.readFileSync(__dirname + '/config.yml', 'utf8'));
 
 const Influx = require('influxdb-nodejs');
 const InfluxClient = new Influx(config.InfluxDB);
 const Log = require('log'),
       log = new Log('debug');
-const Scanner = require('homebridge-mi-hygrothermograph/lib/scanner');
+const { Scanner } = require('homebridge-mi-hygrothermograph/lib/scanner');
 
-Scanner.start();
+XiScanner = new Scanner(log);
+XiScanner.start();
 
 var deviceName = function (id) {
     if (typeof config.Devices[id] === 'undefined') {
@@ -35,18 +36,14 @@ var writeDataPoint = function (type, value, unit, id) {
         .catch(log.error);
 }
 
-var temperatureChange = function (value, id) {
+XiScanner.on('temperatureChange', function (value, id) {
     writeDataPoint('Temperature', value, 'celcius', id);
-}
+});
 
-var humidityChange = function (value, id) {
+XiScanner.on('humidityChange', function (value, id) {
     writeDataPoint('Humidity', value, 'percent', id);
-}
+});
 
-var batteryChange = function (value, id) {
+XiScanner.on('batteryChange', function (value, id) {
     writeDataPoint('Battery', value, 'percent', id);
-}
-
-Scanner.on('temperatureChange', temperatureChange);
-Scanner.on('humidityChange', humidityChange);
-Scanner.on('batteryChange', batteryChange);
+});

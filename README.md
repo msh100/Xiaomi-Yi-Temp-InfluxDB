@@ -2,6 +2,10 @@
 
 This is a simple utility to listen for BLE broadcasts from Xiaomi hygrothermograph sensors (as pictured below) and push their results to InfluxDB.
 
+Since the devices broadcast data freely, there is no need to pair devices.
+
+This is designed to and known to work on a Raspberry Pi Zero W.
+
 ![Xiaomi Yi Hygrothermograph](https://github.com/hannseman/homebridge-mi-hygrothermograph/blob/bb2aeeb42cc3cb5f05a44bbab134596eaf884ded/images/hygrothermograph.png?raw=true)
 
 
